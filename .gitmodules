@@ -1,0 +1,4 @@
+[submodule "aioquic"]
+	path = aioquic
+	url = https://github.com/siliconcupcake/aioquic
+	branch = testing
