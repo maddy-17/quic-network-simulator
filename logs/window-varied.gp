@@ -33,6 +33,6 @@ set style line 3 linecolor rgb '#3949AB' linewidth 2 pt 7 ps 0.6
 
 set terminal svg
 set output 'window-varied.svg'
-plot "reno/window.log" using 1:2 title 'Default' with lines linestyle 1, \
-"cubic/window.log" using 1:2 title 'Event-Based' with lines linestyle 2, \
-"vivace/window.log" using 1:2 title 'Performance-Based' with lines linestyle 3
+plot "reno/window.log" using 1:2 title 'Default' with linespoints linestyle 1, \
+"cubic/window.log" using 1:2 title 'Event-Based' with linespoints linestyle 2, \
+"vivace/window.log" using 1:2 title 'Performance-Based' with linespoints linestyle 3

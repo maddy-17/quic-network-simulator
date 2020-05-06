@@ -1,11 +1,16 @@
 #!/bin/bash
 
+SAVE_DIR="bandwidth-varied"
+RESULT_DIR = ${SAVE_DIR}/results
+
 echo -e "\e[1;33mRunning tests with varying bandwidth \e[0m"
 REQUEST=20000000
 COUNT=1
-INTERVAL=5
-for BANDWIDTH in {5..50..5}
+STEP=5
+OFFSET=0
+for ITERATION in {1..10}
 do
+    let BANDWIDTH="$OFFSET + ($ITERATION * $STEP)"
     echo -e "\e[1;34mSetting bandwidth to ${BANDWIDTH} Mbps \e[0m"
     export SCENARIO="simple-p2p --delay=30ms --bandwidth=${BANDWIDTH}Mbps --queue=25"
     for CC in {0..2}
@@ -13,17 +18,17 @@ do
         export SERVER_PARAMS="--cc ${CC}"
         export CLIENT_PARAMS="--cc ${CC} -r ${REQUEST} -n ${COUNT}"
         case  ${CC}  in
-                0)
-                CC_NAME="NewReno Congestion Control"
-                    ;;
-                1)
-                CC_NAME="Cubic Congestion Control"
-                    ;;
-                2)
-                CC_NAME="Vivace Congestion Control"
-                    ;;
-                *)
-                    ;;
+            0)
+            CC_NAME="NewReno Congestion Control"
+                ;;
+            1)
+            CC_NAME="Cubic Congestion Control"
+                ;;
+            2)
+            CC_NAME="Vivace Congestion Control"
+                ;;
+            *)
+                ;;
         esac
         echo -e "\e[1;34mUsing ${CC_NAME} \e[0m"
         echo -e "\e[1;32mBuilding containers \e[0m"
@@ -38,8 +43,12 @@ do
 done
 
 cd logs
-if [[ ! -e results ]]; then
-    mkdir results
+echo -e "\e[1;31mRemoving old backups \e[0m"
+rm -rf ${SAVE_DIR}
+mkdir ${SAVE_DIR}
+
+if [[ ! -e ${RESULT_DIR} ]]; then
+    mkdir ${RESULT_DIR}
 fi
 
 sudo chown -R $USER reno
@@ -59,23 +68,19 @@ gnuplot latency-fixed.gp
 mv latency-fixed.svg results/latency-fixed-bandwidth.svg
 
 echo -e "\e[1;33mPlotting window graph for range of bandwidths \e[0m"
-python3 window.py $INTERVAL
+python3 window.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" window-varied.gp
 mv window-varied.svg results/window-varied-bandwidth.svg
 
 echo -e "\e[1;33mPlotting loss graph for range of bandwidths \e[0m"
-python3 loss.py $INTERVAL
+python3 loss.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" loss-varied.gp
 mv loss-varied.svg results/loss-varied-bandwidth.svg
 
 echo -e "\e[1;33mPlotting latency graph for range of bandwidths \e[0m"
-python3 latency.py $INTERVAL
+python3 latency.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" latency-varied.gp
 mv latency-varied.svg results/latency-varied-bandwidth.svg
-
-echo -e "\e[1;31mRemoving old backups \e[0m"
-rm -rf bandwidth
-mkdir bandwidth
 
 echo -e "\e[1;32mBacking up logs \e[0m"
 mv reno bandwidth/
