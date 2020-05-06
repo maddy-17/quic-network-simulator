@@ -1,0 +1,14 @@
+.git
+.github
+*.egg-info
+*.pyc
+*.so
+.coverage
+.eggs
+.mypy_cache
+.vscode
+*.qlog
+/build
+/dist
+/docs
+/examples/videos

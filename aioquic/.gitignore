@@ -1,0 +1,15 @@
+*.egg-info
+*.pyc
+*.so
+.coverage
+.eggs
+.mypy_cache
+.vscode
+*.qlog
+logs/*
+!logs/*.gp
+!logs/*.py
+/build
+/dist
+/docs/_build
+/examples/videos
