@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SAVE_DIR="drop-rate-varied"
-RESULT_DIR = ${SAVE_DIR}/results
+RESULT_DIR=${SAVE_DIR}/results
 
 echo -e "\e[1;33mRunning tests with varying drop-rate \e[0m"
 REQUEST=5000000
@@ -14,7 +14,7 @@ do
     echo -e "\e[1;34mSetting drop rate to ${DROP_RATE} % \e[0m"
     export SCENARIO="drop-rate --delay=30ms \
         --bandwidth=60Mbps \
-        --queue=25 \
+        --queue=100 \
         --rate_to_server=0 \
         --rate_to_client=${DROP_RATE}"
     for CC in {0..2}
@@ -61,32 +61,37 @@ sudo chown -R $USER vivace
 
 echo -e "\e[1;33mPlotting window graph for 6% \e[0m"
 gnuplot window-fixed.gp
-mv window-fixed.svg results/window-fixed-drop-rate.svg
+mv window-fixed.svg ${RESULT_DIR}/window-fixed-drop-rate.svg
 
 echo -e "\e[1;33mPlotting loss graph for 6% \e[0m"
 gnuplot loss-fixed.gp
-mv loss-fixed.svg results/loss-fixed-drop-rate.svg
+mv loss-fixed.svg ${RESULT_DIR}/loss-fixed-drop-rate.svg
 
 echo -e "\e[1;33mPlotting latency graph for 6% \e[0m"
 gnuplot latency-fixed.gp
-mv latency-fixed.svg results/latency-fixed-drop-rate.svg
+mv latency-fixed.svg ${RESULT_DIR}/latency-fixed-drop-rate.svg
 
 echo -e "\e[1;33mPlotting window graph for range of drop-rates \e[0m"
 python3 window.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" window-varied.gp
-mv window-varied.svg results/window-varied-drop-rate.svg
+mv window-varied.svg ${RESULT_DIR}/window-varied-drop-rate.svg
 
 echo -e "\e[1;33mPlotting loss graph for range of drop-rates \e[0m"
 python3 loss.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" loss-varied.gp
-mv loss-varied.svg results/loss-varied-drop-rate.svg
+mv loss-varied.svg ${RESULT_DIR}/loss-varied-drop-rate.svg
 
 echo -e "\e[1;33mPlotting latency graph for range of drop-rates \e[0m"
 python3 latency.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" latency-varied.gp
-mv latency-varied.svg results/latency-varied-drop-rate.svg
+mv latency-varied.svg ${RESULT_DIR}/latency-varied-drop-rate.svg
+
+echo -e "\e[1;33mPlotting throughput graph for range of drop-rates \e[0m"
+python3 throughput.py $OFFSET $STEP
+gnuplot -e "labelname='Drop Rate (%)'" throughput-varied.gp
+mv throughput-varied.svg ${RESULT_DIR}/throughput-varied-drop-rate.svg
 
 echo -e "\e[1;32mBacking up logs \e[0m"
-mv reno drop-rate/
-mv cubic drop-rate/
-mv vivace drop-rate/
+mv reno ${SAVE_DIR}/
+mv cubic ${SAVE_DIR}/
+mv vivace ${SAVE_DIR}/

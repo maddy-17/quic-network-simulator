@@ -18,11 +18,11 @@ set grid back ls 102
 
 # Labels
 set xlabel 'Time (s)' offset 0, 0.25
-set ylabel 'RTT (s)' offset 2
+set ylabel 'RTT (ms)' offset 2
 set title 'LATENCY' font ',18'
 
 # Padding
-set offset 1, 1, 0, 0
+set offset 1, 1, 1, 1
 
 # Point Styles
 set style fill solid 1.00

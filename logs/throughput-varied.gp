@@ -18,8 +18,8 @@ set grid back ls 102
 
 # Labels
 set xlabel labelname offset 0, 0.25
-set ylabel 'Window Size (bytes)' offset 2
-set title 'CONGESTION WINDOW' font ',18'
+set ylabel 'Throughput (Mbps)' offset 2
+set title 'THROUGHPUT' font ',18'
 
 # Padding
 set offset 1, 1, 1, 1
@@ -32,7 +32,7 @@ set style line 3 linecolor rgb '#3949AB' linewidth 2 pt 7 ps 0.6
 # Plot
 
 set terminal svg
-set output 'window-varied.svg'
-plot "reno/window.log" using 1:2 title 'Default' with linespoints linestyle 1, \
-"cubic/window.log" using 1:2 title 'Event-Based' with linespoints linestyle 2, \
-"vivace/window.log" using 1:2 title 'Performance-Based' with linespoints linestyle 3
+set output 'throughput-varied.svg'
+plot "reno/throughput.log" using 2:1 title 'Default' with linespoints linestyle 1, \
+"cubic/throughput.log" using 2:1 title 'Event-Based' with linespoints linestyle 2, \
+"vivace/throughput.log" using 2:1 title 'Performance-Based' with linespoints linestyle 3

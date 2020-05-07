@@ -22,7 +22,7 @@ set ylabel 'Packets Lost' offset 2
 set title 'LOSS' font ',18'
 
 # Padding
-set offset 1, 1, 0, 0
+set offset 1, 1, 1, 1
 
 # Line Styles
 set style line 1 linecolor rgb '#E6193C' linewidth 2 pt 7 ps 0.6

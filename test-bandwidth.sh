@@ -1,18 +1,18 @@
 #!/bin/bash
 
 SAVE_DIR="bandwidth-varied"
-RESULT_DIR = ${SAVE_DIR}/results
+RESULT_DIR=${SAVE_DIR}/results
 
 echo -e "\e[1;33mRunning tests with varying bandwidth \e[0m"
 REQUEST=20000000
 COUNT=1
-STEP=5
+STEP=1
 OFFSET=0
 for ITERATION in {1..10}
 do
     let BANDWIDTH="$OFFSET + ($ITERATION * $STEP)"
     echo -e "\e[1;34mSetting bandwidth to ${BANDWIDTH} Mbps \e[0m"
-    export SCENARIO="simple-p2p --delay=30ms --bandwidth=${BANDWIDTH}Mbps --queue=25"
+    export SCENARIO="simple-p2p --delay=30ms --bandwidth=${BANDWIDTH}Mbps --queue=100"
     for CC in {0..2}
     do
         export SERVER_PARAMS="--cc ${CC}"
@@ -57,32 +57,37 @@ sudo chown -R $USER vivace
 
 echo -e "\e[1;33mPlotting window graph for 60Mbps \e[0m"
 gnuplot window-fixed.gp
-mv window-fixed.svg results/window-fixed-bandwidth.svg
+mv window-fixed.svg ${RESULT_DIR}/window-fixed-bandwidth.svg
 
 echo -e "\e[1;33mPlotting loss graph for 60Mbps \e[0m"
 gnuplot loss-fixed.gp
-mv loss-fixed.svg results/loss-fixed-bandwidth.svg
+mv loss-fixed.svg ${RESULT_DIR}/loss-fixed-bandwidth.svg
 
 echo -e "\e[1;33mPlotting latency graph for 60Mbps \e[0m"
 gnuplot latency-fixed.gp
-mv latency-fixed.svg results/latency-fixed-bandwidth.svg
+mv latency-fixed.svg ${RESULT_DIR}/latency-fixed-bandwidth.svg
 
 echo -e "\e[1;33mPlotting window graph for range of bandwidths \e[0m"
 python3 window.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" window-varied.gp
-mv window-varied.svg results/window-varied-bandwidth.svg
+mv window-varied.svg ${RESULT_DIR}/window-varied-bandwidth.svg
 
 echo -e "\e[1;33mPlotting loss graph for range of bandwidths \e[0m"
 python3 loss.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" loss-varied.gp
-mv loss-varied.svg results/loss-varied-bandwidth.svg
+mv loss-varied.svg ${RESULT_DIR}/loss-varied-bandwidth.svg
 
 echo -e "\e[1;33mPlotting latency graph for range of bandwidths \e[0m"
 python3 latency.py $OFFSET $STEP
 gnuplot -e "labelname='Bandwidth (Mbps)'" latency-varied.gp
-mv latency-varied.svg results/latency-varied-bandwidth.svg
+mv latency-varied.svg ${RESULT_DIR}/latency-varied-bandwidth.svg
+
+echo -e "\e[1;33mPlotting throughput graph for range of bandwidths \e[0m"
+python3 throughput.py $OFFSET $STEP
+gnuplot -e "labelname='Bandwidth (Mbps)'" throughput-varied.gp
+mv throughput-varied.svg ${RESULT_DIR}/throughput-varied-bandwidth.svg
 
 echo -e "\e[1;32mBacking up logs \e[0m"
-mv reno bandwidth/
-mv cubic bandwidth/
-mv vivace bandwidth/
+mv reno ${SAVE_DIR}/
+mv cubic ${SAVE_DIR}/
+mv vivace ${SAVE_DIR}/

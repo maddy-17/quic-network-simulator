@@ -19,10 +19,10 @@ set grid back ls 102
 # Labels
 set xlabel 'Time (s)' offset 0, 0.25
 set ylabel 'Window Size (bytes)' offset 2
-set title 'THROUGHPUT' font ',18'
+set title 'CONGESTION WINDOW' font ',18'
 
 # Padding
-set offset 1, 1, 0, 0
+set offset 1, 1, 1, 1
 
 # Line Styles
 set style line 1 linecolor rgb '#E6193C' linewidth 2

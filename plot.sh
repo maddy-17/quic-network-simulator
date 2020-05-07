@@ -6,7 +6,7 @@ STEP=1
 
 rm -rf ${SAVE_DIR}
 mkdir ${SAVE_DIR}
-RESULT_DIR = ${SAVE_DIR}/results
+RESULT_DIR=${SAVE_DIR}/results
 
 if [[ ! -e ${RESULT_DIR} ]]; then
     mkdir ${RESULT_DIR}
@@ -42,6 +42,11 @@ echo -e "\e[1;33mPlotting latency graph against iterations \e[0m"
 python3 latency.py $OFFSET $STEP
 gnuplot -e "labelname='Iteration'" latency-varied.gp
 mv latency-varied.svg ${RESULT_DIR}/latency-iterations.svg
+
+echo -e "\e[1;33mPlotting throughput graph against iterations \e[0m"
+python3 throughput.py $OFFSET $STEP
+gnuplot -e "labelname='Iteration'" throughput-varied.gp
+mv throughput-varied.svg ${RESULT_DIR}/throughput-iterations.svg
 
 echo -e "\e[1;32mBacking up logs \e[0m"
 mv reno ${SAVE_DIR}/
