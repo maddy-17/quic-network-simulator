@@ -50,46 +50,57 @@ cd logs
 echo -e "\e[1;31mRemoving old backups \e[0m"
 rm -rf ${SAVE_DIR}
 mkdir ${SAVE_DIR}
-
-if [[ ! -e ${RESULT_DIR} ]]; then
-    mkdir ${RESULT_DIR}
-fi
+mkdir ${RESULT_DIR}
 
 sudo chown -R $USER reno
 sudo chown -R $USER cubic
 sudo chown -R $USER vivace
 
-echo -e "\e[1;33mPlotting window graph for 6% \e[0m"
-gnuplot window-fixed.gp
-mv window-fixed.svg ${RESULT_DIR}/window-fixed-drop-rate.svg
+for PHASE in {1..10}
+do
+    let PHASE_DR="$OFFSET + ($PHASE * $STEP)"
+    PHASE_DIR=${RESULT_DIR}/phase-${PHASE_DR}
+    mkdir ${PHASE_DIR}
 
-echo -e "\e[1;33mPlotting loss graph for 6% \e[0m"
-gnuplot loss-fixed.gp
-mv loss-fixed.svg ${RESULT_DIR}/loss-fixed-drop-rate.svg
+    echo -e "\e[1;33mPlotting window graph for ${PHASE_DR} % \e[0m"
+    gnuplot -e "phase=${PHASE}" window-fixed.gp
+    mv window-fixed.svg ${PHASE_DIR}/window-fixed-drop-rate.svg
+    mv window-fixed.png ${PHASE_DIR}/window-fixed-drop-rate.png
 
-echo -e "\e[1;33mPlotting latency graph for 6% \e[0m"
-gnuplot latency-fixed.gp
-mv latency-fixed.svg ${RESULT_DIR}/latency-fixed-drop-rate.svg
+    echo -e "\e[1;33mPlotting loss graph for ${PHASE_DR} % \e[0m"
+    gnuplot -e "phase=${PHASE}" loss-fixed.gp
+    mv loss-fixed.svg ${PHASE_DIR}/loss-fixed-drop-rate.svg
+    mv loss-fixed.png ${PHASE_DIR}/loss-fixed-drop-rate.png
+
+    echo -e "\e[1;33mPlotting latency graph for ${PHASE_DR} % \e[0m"
+    gnuplot -e "phase=${PHASE}" latency-fixed.gp
+    mv latency-fixed.svg ${PHASE_DIR}/latency-fixed-drop-rate.svg
+    mv latency-fixed.png ${PHASE_DIR}/latency-fixed-drop-rate.png
+done
 
 echo -e "\e[1;33mPlotting window graph for range of drop-rates \e[0m"
 python3 window.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" window-varied.gp
 mv window-varied.svg ${RESULT_DIR}/window-varied-drop-rate.svg
+mv window-varied.png ${RESULT_DIR}/window-varied-drop-rate.png
 
 echo -e "\e[1;33mPlotting loss graph for range of drop-rates \e[0m"
 python3 loss.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" loss-varied.gp
 mv loss-varied.svg ${RESULT_DIR}/loss-varied-drop-rate.svg
+mv loss-varied.png ${RESULT_DIR}/loss-varied-drop-rate.png
 
 echo -e "\e[1;33mPlotting latency graph for range of drop-rates \e[0m"
 python3 latency.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" latency-varied.gp
 mv latency-varied.svg ${RESULT_DIR}/latency-varied-drop-rate.svg
+mv latency-varied.png ${RESULT_DIR}/latency-varied-drop-rate.png
 
 echo -e "\e[1;33mPlotting throughput graph for range of drop-rates \e[0m"
 python3 throughput.py $OFFSET $STEP
 gnuplot -e "labelname='Drop Rate (%)'" throughput-varied.gp
 mv throughput-varied.svg ${RESULT_DIR}/throughput-varied-drop-rate.svg
+mv throughput-varied.png ${RESULT_DIR}/throughput-varied-drop-rate.png
 
 echo -e "\e[1;32mBacking up logs \e[0m"
 mv reno ${SAVE_DIR}/

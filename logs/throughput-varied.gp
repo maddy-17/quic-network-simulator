@@ -36,3 +36,7 @@ set output 'throughput-varied.svg'
 plot "reno/throughput.log" using 2:1 title 'Default' with linespoints linestyle 1, \
 "cubic/throughput.log" using 2:1 title 'Event-Based' with linespoints linestyle 2, \
 "vivace/throughput.log" using 2:1 title 'Performance-Based' with linespoints linestyle 3
+
+set terminal pngcairo
+set output 'throughput-varied.png'
+replot

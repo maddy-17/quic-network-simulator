@@ -33,9 +33,13 @@ set style line 3 linecolor rgb '#3949AB' linewidth 2
 
 set terminal svg
 set output 'window-fixed.svg'
-plot "reno/server/s6/window.log" using 2:1 title 'Default' with lines linestyle 1, \
-"cubic/server/s6/window.log" using 2:1 title 'Event-Based' with lines linestyle 2, \
-"vivace/server/s6/window.log" using 2:1 title 'Performance-Based' with lines linestyle 3
+plot "reno/server/s".phase."/window.log" using 2:1 title 'Default' with lines linestyle 1, \
+"cubic/server/s".phase."/window.log" using 2:1 title 'Event-Based' with lines linestyle 2, \
+"vivace/server/s".phase."/window.log" using 2:1 title 'Performance-Based' with lines linestyle 3
+
+set terminal pngcairo
+set output 'window-fixed.png'
+replot
 
 # set terminal png
 # set output 'reno-window.png'

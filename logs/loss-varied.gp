@@ -36,3 +36,7 @@ set output 'loss-varied.svg'
 plot "reno/loss.log" using 1:2 title 'Default' with linespoints linestyle 1, \
 "cubic/loss.log" using 1:2 title 'Event-Based' with linespoints linestyle 2, \
 "vivace/loss.log" using 1:2 title 'Performance-Based' with linespoints linestyle 3
+
+set terminal pngcairo
+set output 'loss-varied.png'
+replot

@@ -35,3 +35,7 @@ set output 'latency-varied.svg'
 plot "reno/latency.log" using 1:2 title 'Default' with linespoints linestyle 1, \
 "cubic/latency.log" using 1:2 title 'Event-Based' with linespoints linestyle 2, \
 "vivace/latency.log" using 1:2 title 'Performance-Based' with linespoints linestyle 3
+
+set terminal pngcairo
+set output 'latency-varied.png'
+replot

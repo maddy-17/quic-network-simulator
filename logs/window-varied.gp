@@ -36,3 +36,7 @@ set output 'window-varied.svg'
 plot "reno/window.log" using 1:2 title 'Default' with linespoints linestyle 1, \
 "cubic/window.log" using 1:2 title 'Event-Based' with linespoints linestyle 2, \
 "vivace/window.log" using 1:2 title 'Performance-Based' with linespoints linestyle 3
+
+set terminal pngcairo
+set output 'window-varied.png'
+replot

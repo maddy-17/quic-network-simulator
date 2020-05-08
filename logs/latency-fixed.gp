@@ -26,16 +26,20 @@ set offset 1, 1, 1, 1
 
 # Point Styles
 set style fill solid 1.00
-set style line 1 linecolor rgb '#E6193C' lt 1 pt 5 ps 0.3
-set style line 2 linecolor rgb '#01A252' lt 1 pt 7 ps 0.3
-set style line 3 linecolor rgb '#3949AB' lt 1 pt 9 ps 0.3
+set style line 1 linecolor rgb '#E6193C' lt 1 lw 1 pt 5 ps 0.3
+set style line 2 linecolor rgb '#01A252' lt 1 lw 1 pt 7 ps 0.3
+set style line 3 linecolor rgb '#3949AB' lt 1 lw 1 pt 9 ps 0.3
 
 # Plot
 set terminal svg
 set output 'latency-fixed.svg'
-plot "reno/server/s6/latency.log" using 3:2 title 'Default' with points linestyle 1, \
-"cubic/server/s6/latency.log" using 3:2 title 'Event-Based' with points linestyle 2, \
-"vivace/server/s6/latency.log" using 3:2 title 'Performance-Based' with points linestyle 3
+plot "reno/server/s".phase."/latency.log" using 3:2 title 'Default' with lines linestyle 1, \
+"cubic/server/s".phase."/latency.log" using 3:2 title 'Event-Based' with lines linestyle 2, \
+"vivace/server/s".phase."/latency.log" using 3:2 title 'Performance-Based' with lines linestyle 3
+
+set terminal pngcairo
+set output 'latency-fixed.png'
+replot
 
 # set terminal png
 # set output 'reno-latency.png'

@@ -33,9 +33,13 @@ set style line 3 linecolor rgb '#3949AB' linewidth 2 pt 7 ps 0.6
 
 set terminal svg
 set output 'loss-fixed.svg'
-plot "reno/server/s6/loss.log" using 3:1 title 'Default' with linespoints linestyle 1, \
-"cubic/server/s6/loss.log" using 3:1 title 'Event-Based' with linespoints linestyle 2, \
-"vivace/server/s6/loss.log" using 3:1 title 'Performance-Based' with linespoints linestyle 3
+plot "reno/server/s".phase."/loss.log" using 3:1 title 'Default' with linespoints linestyle 1, \
+"cubic/server/s".phase."/loss.log" using 3:1 title 'Event-Based' with linespoints linestyle 2, \
+"vivace/server/s".phase."/loss.log" using 3:1 title 'Performance-Based' with linespoints linestyle 3
+
+set terminal pngcairo
+set output 'loss-fixed.png'
+replot
 
 # set terminal png
 # set output 'reno-loss.png'
