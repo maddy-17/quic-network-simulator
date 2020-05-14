@@ -5,18 +5,19 @@ RESULT_DIR=${SAVE_DIR}/results
 
 echo -e "\e[1;33mRunning tests with varying bandwidth \e[0m"
 REQUEST=20000000
-COUNT=1
+RCOUNT=1
+ICOUNT=7
 STEP=1
-OFFSET=0
-for ITERATION in {1..10}
+OFFSET=3
+for ITERATION in $(eval echo {1..$ICOUNT})
 do
     let BANDWIDTH="$OFFSET + ($ITERATION * $STEP)"
     echo -e "\e[1;34mSetting bandwidth to ${BANDWIDTH} Mbps \e[0m"
-    export SCENARIO="simple-p2p --delay=30ms --bandwidth=${BANDWIDTH}Mbps --queue=100"
+    export SCENARIO="simple-p2p --delay=0ms --bandwidth=${BANDWIDTH}Mbps --queue=50"
     for CC in {0..2}
     do
         export SERVER_PARAMS="--cc ${CC}"
-        export CLIENT_PARAMS="--cc ${CC} -r ${REQUEST} -n ${COUNT}"
+        export CLIENT_PARAMS="--cc ${CC} -r ${REQUEST} -n ${RCOUNT}"
         case  ${CC}  in
             0)
             CC_NAME="NewReno Congestion Control"
@@ -52,7 +53,7 @@ sudo chown -R $USER reno
 sudo chown -R $USER cubic
 sudo chown -R $USER vivace
 
-for PHASE in {1..10}
+for PHASE in $(eval echo {1..$ICOUNT})
 do
     let PHASE_BW="$OFFSET + ($PHASE * $STEP)"
     PHASE_DIR=${RESULT_DIR}/phase-${PHASE_BW}
@@ -75,19 +76,19 @@ do
 done
 
 echo -e "\e[1;33mPlotting window graph for range of bandwidths \e[0m"
-python3 window.py $OFFSET $STEP
+python3 window.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Bandwidth (Mbps)'" window-varied.gp
 mv window-varied.svg ${RESULT_DIR}/window-varied-bandwidth.svg
 mv window-varied.png ${RESULT_DIR}/window-varied-bandwidth.png
 
 echo -e "\e[1;33mPlotting loss graph for range of bandwidths \e[0m"
-python3 loss.py $OFFSET $STEP
+python3 loss.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Bandwidth (Mbps)'" loss-varied.gp
 mv loss-varied.svg ${RESULT_DIR}/loss-varied-bandwidth.svg
 mv loss-varied.png ${RESULT_DIR}/loss-varied-bandwidth.png
 
 echo -e "\e[1;33mPlotting latency graph for range of bandwidths \e[0m"
-python3 latency.py $OFFSET $STEP
+python3 latency.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Bandwidth (Mbps)'" latency-varied.gp
 mv latency-varied.svg ${RESULT_DIR}/latency-varied-bandwidth.svg
 mv latency-varied.png ${RESULT_DIR}/latency-varied-bandwidth.png

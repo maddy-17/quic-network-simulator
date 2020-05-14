@@ -5,22 +5,23 @@ RESULT_DIR=${SAVE_DIR}/results
 
 echo -e "\e[1;33mRunning tests with varying drop-rate \e[0m"
 REQUEST=5000000
-COUNT=1
+RCOUNT=1
+ICOUNT=5
 STEP=1
 OFFSET=0
-for ITERATION in {1..10}
+for ITERATION in $(eval echo {1..$ICOUNT})
 do
     let DROP_RATE="$OFFSET + ($ITERATION * $STEP)"
     echo -e "\e[1;34mSetting drop rate to ${DROP_RATE} % \e[0m"
     export SCENARIO="drop-rate --delay=30ms \
-        --bandwidth=60Mbps \
-        --queue=100 \
+        --bandwidth=10Mbps \
+        --queue=50 \
         --rate_to_server=0 \
         --rate_to_client=${DROP_RATE}"
     for CC in {0..2}
     do
         export SERVER_PARAMS="--cc ${CC}"
-        export CLIENT_PARAMS="--cc ${CC} -r ${REQUEST} -n ${COUNT}"
+        export CLIENT_PARAMS="--cc ${CC} -r ${REQUEST} -n ${RCOUNT}"
         case  ${CC}  in
             0)
             CC_NAME="NewReno Congestion Control"
@@ -56,7 +57,7 @@ sudo chown -R $USER reno
 sudo chown -R $USER cubic
 sudo chown -R $USER vivace
 
-for PHASE in {1..10}
+for PHASE in $(eval echo {1..$ICOUNT})
 do
     let PHASE_DR="$OFFSET + ($PHASE * $STEP)"
     PHASE_DIR=${RESULT_DIR}/phase-${PHASE_DR}
@@ -79,19 +80,19 @@ do
 done
 
 echo -e "\e[1;33mPlotting window graph for range of drop-rates \e[0m"
-python3 window.py $OFFSET $STEP
+python3 window.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Drop Rate (%)'" window-varied.gp
 mv window-varied.svg ${RESULT_DIR}/window-varied-drop-rate.svg
 mv window-varied.png ${RESULT_DIR}/window-varied-drop-rate.png
 
 echo -e "\e[1;33mPlotting loss graph for range of drop-rates \e[0m"
-python3 loss.py $OFFSET $STEP
+python3 loss.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Drop Rate (%)'" loss-varied.gp
 mv loss-varied.svg ${RESULT_DIR}/loss-varied-drop-rate.svg
 mv loss-varied.png ${RESULT_DIR}/loss-varied-drop-rate.png
 
 echo -e "\e[1;33mPlotting latency graph for range of drop-rates \e[0m"
-python3 latency.py $OFFSET $STEP
+python3 latency.py $OFFSET $STEP $ICOUNT
 gnuplot -e "labelname='Drop Rate (%)'" latency-varied.gp
 mv latency-varied.svg ${RESULT_DIR}/latency-varied-drop-rate.svg
 mv latency-varied.png ${RESULT_DIR}/latency-varied-drop-rate.png

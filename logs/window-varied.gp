@@ -17,8 +17,8 @@ set style line 102 lc rgb '#454545' lt 0 lw 1
 set grid back ls 102
 
 # Labels
-set xlabel labelname offset 0, 0.25
-set ylabel 'Window Size (bytes)' offset 2
+set xlabel labelname
+set ylabel 'Window Size (bytes)'
 set title 'CONGESTION WINDOW' font ',18'
 
 # Padding
